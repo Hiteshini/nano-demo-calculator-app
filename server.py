@@ -1,18 +1,38 @@
+
 from flask import Flask,request, jsonify
+
+from flask import Flask, request, jsonify
+from dataclasses import dataclass
+
+@dataclass
+class Result:
+    result: int
+
+
 
 app = Flask(__name__)
 
 # Endpoint: GET /calculator/greeting
 @app.route('/calculator/greeting', methods=['GET'])
 def greeting():
+
     return jsonify(message='Hello world!'), 200
+
+    return 'Hello world!'
+
 
 # Endpoint: POST /calculator/add
 @app.route('/calculator/add', methods=['POST'])
 def add():
+
     data = request.get_json()
     first = data.get('first', None)
     second = data.get('second', None)
+
+    numbers = request.json
+    response = Result(numbers['first'] + numbers['second'])
+    return jsonify(response)
+
 
     if first is None or second is None or not isinstance(first, (int, float)) or not isinstance(second, (int, float)):
         return jsonify(error='Invalid input. Both first and second must be numbers.'), 400
@@ -23,6 +43,7 @@ def add():
 # Endpoint: POST /calculator/subtract
 @app.route('/calculator/subtract', methods=['POST'])
 def subtract():
+
     data = request.get_json()
     first = data.get('first', None)
     second = data.get('second', None)
@@ -32,6 +53,11 @@ def subtract():
 
     result = first - second
     return jsonify(result=result), 200
+
+    numbers = request.json
+    response = Result(numbers['first'] - numbers['second'])
+    return jsonify(response)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
